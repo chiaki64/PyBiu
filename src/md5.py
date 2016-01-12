@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
+import logging;logging.basicConfig(level=logging.INFO)
 import hashlib
 import os
 import sys
@@ -13,7 +14,7 @@ def str_md5(str):
     obj.update(str)
     str_hash = obj.hexdigest()
 
-    # print(str_hash)
+    # logging.info(str_hash)
 
     return str_hash
 
@@ -27,11 +28,11 @@ def file_md5(file_path):
         obj.update(f.read())
         file_hash = obj.hexdigest()
 
-        # print(file_hash)
+        # logging.info(file_hash)
 
         # end = time.time()
         # interval = (end - start)
-        # print(interval)
+        # logging.info(interval)
         return file_hash
 
 
@@ -41,10 +42,10 @@ if __name__ == "__main__":
         if not os.path.exists(file):
             file = os.path.join(os.path.dirname(__file__), file)
             if not os.path.exists(file):
-                print("cannot found file")
+                logging.info("cannot found file")
             else:
                 file_md5(file)
         else:
             file_md5(file)
     else:
-        print("no filename")
+        logging.info("no filename")

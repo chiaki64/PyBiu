@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
+import logging;logging.basicConfig(level=logging.INFO)
 import sys
 import os
 import binascii

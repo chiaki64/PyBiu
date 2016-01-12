@@ -2,8 +2,15 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
+import logging;logging.basicConfig(level=logging.INFO)
 import requests
 import json
+import time
+import sys
+
+# import urllib.request
+
+
 
 from src.init import usage
 from src.id3 import getID3
@@ -17,49 +24,75 @@ def post(uid, filemd5, title, singer, album, sign, api):
     #            'sign': '9cc0c9913190b0973b18aee175b22efa'}
     upload = {'uid': uid, 'filemd5': filemd5, 'title': title, 'singer': singer, 'album': album, 'sign': sign}
     r = requests.post(api, data=upload)
-    #   print(r.text)
-    flag, token = judge(r.text)
+    #   logging.info(r.text)
+    flag, token, up = judge(r.text)
     if flag:
-        print("token ->"+token)
-        return True, token
+        logging.info("token ->"+token)
+        return True, token, title
+    elif not up:
+        logging.info("是否强制撞车 Y/N")
+        try:
+            force = raw_input()
+        except:
+            force = input()
+        if force in ["Y", "y"]:
+            force = 1
+            force_upload, token = post_force(uid, filemd5, title, singer, album, sign, api, force)
+            return True, token, title
+        return False, "" , title
     else:
+        return False, "" , title # 失败
+
+
+def post_force(uid, filemd5, title, singer, album, sign, api, force):
+    upload = {'uid': uid, 'filemd5': filemd5, 'title': title, 'singer': singer, 'album': album, 'sign': sign, 'force': force}
+    r = requests.post(api, data=upload)
+    try:
+        flag, token, upload = judge(unicode(r.text))
+        if flag:
+            logging.info("token ->"+token)
+            return True, token
+        else:
+            return False, ""  # 失败
+    except ValueError:
         return False, ""  # 失败
 
 
 def judge(text):
     str = json.loads(text)
     if str['success']:
-        # print("true")
+        # logging.info("true")
         token = str['token']
-        return True, token
+        return True, token, True
     else:
-        # print('false')
+        # logging.info('false')
         if error(str['error_code']) == 2:  # if 'error_code' in str:
             result = str['result']
-            # print(result)
+            # logging.info(result)
             solve(result)
-        return False, ""
+            return False, "", False
+        return False, "", True
     pass
 
 
 def error(error_code):
     if error_code == 1:
-        print("sign 签名校检失败")
+        logging.info("sign 签名校检失败")
         return 1
     elif error_code == 2:
-        print("系统检测疑似撞车")
+        logging.info("系统检测疑似撞车")
         return 2
     elif error_code == 3:
-        print("未通过审核的歌曲超过 100 首，请先进入网站『我上传的音乐』删除一部分未通过的文件")
+        logging.info("未通过审核的歌曲超过 100 首，请先进入网站『我上传的音乐』删除一部分未通过的文件")
         return 3
     elif error_code == 4:
-        print("参数不齐，至少歌曲名不能为空")
+        logging.info("参数不齐，至少歌曲名不能为空")
         return 4
     elif error_code == 5:
-        print("服务器已存在该文件（撞 MD5）")
+        logging.info("服务器已存在该文件（撞 MD5）")
         return 5
     else:
-        print("unknown result.")
+        logging.info("unknown result.")
         return 6
 
 
@@ -69,10 +102,10 @@ def solve(string):
     #           {'level': '1', 'album': 'Rwby (Songs)', 'title': 'This Will Be The Day (Featuring Casey Lee Williams)',
     #            'sid': '6574', 'singer': 'Jeff Williams', 'score': 5.5}]
     # s = json.dumps(string)
-    # print(string)
-    print("疑似撞车的歌曲:")
+    # logging.info(string)
+    logging.info("疑似撞车的歌曲:")
     for res in string:
-        print("Title: " + res['title'] + " | album: " + res['album'] + " | singer: " + res['singer'] + " | sid: " +
+        logging.info("Title: " + res['title'] + " | album: " + res['album'] + " | singer: " + res['singer'] + " | sid: " +
               res['sid'] + " | score : %.1f" % res['score'])
     pass
 
@@ -81,24 +114,26 @@ def post_biu(file):
     _title, _artist, _album, _flag = getID3(file)
     try:
         if _flag == 0:
-            print("码率不合 请重现检察")
+            logging.info("码率不合 请重现检察")
             raise Exception  # 自定义错误
         if _flag == 2:
-            print("Title不完整 拒绝上传")
+            logging.info("Title不完整 拒绝上传")
             raise Exception  # 自定义错误
     except Exception:
-        return 0, ""
-    print("Title -> " + _title)
-    print("Artist -> " + _artist)
-    print("Album -> " + _album)
+        return 0, "", ""
+    logging.info("Title -> " + _title)
+    logging.info("Artist -> " + _artist)
+    logging.info("Album -> " + _album)
     _md5 = file_md5(file)
     _uid, _key, _api = uid()
     _sign_str = sign(_uid, _md5, _key, _title, _artist, _album)
-    # print(_sign_str)
-    flag, token = post(_uid, _md5, _title, _artist, _album, _sign_str, _api)
+    # logging.info(_sign_str)
+    flag, token, title = post(_uid, _md5, _title, _artist, _album, _sign_str, _api)
     if flag:
-        print("允许上传")
-    return 1, token
+        logging.info("允许上传")
+        return 1, token, title
+    logging.info("取消上传.")
+    return 0, "", title
 
 
 def post_file(path, key, token):
@@ -112,18 +147,38 @@ def post_file(path, key, token):
     return False
 
 
-def confirm(path, key, token):
-    print("是否上传？Y/N")
-    choose = input()
-    if choose == "Y":
+def confirm(title, path, key, token):
+    logging.info("是否上传？Y/N")
+    try:
+        choose = raw_input()
+    except:
+        choose = input()
+    if choose in ["Y", "y"]:
+        # progress_test()
         if post_file(path, key, token):
-            print("上传成功.")
+            logging.info("成功上传  " + title.encode('gbk'))
         else:
-            print("位置原因失败")
+            logging.info("未知原因失败")
     else:
+        logging.info("取消上传.")
         pass
 
     pass
+
+
+
+#  异步
+# def progress_test():
+#     bar_length=20
+#     for percent in range(0, 100):
+#         hashes = '#' * int(percent/100.0 * bar_length)
+#         spaces = ' ' * (bar_length - len(hashes))
+#         sys.stdout.write("\rPercent: [%s] %d%%"%(hashes + spaces, percent))
+#         sys.stdout.flush()
+#         time.sleep(1)
+
+
+
 
 if __name__ == "__main__":
     pass

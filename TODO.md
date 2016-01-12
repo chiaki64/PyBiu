@@ -29,7 +29,7 @@ aac码率大于200，MP3码率大于300
                 continue
 
 string = input()
-print(string)
+logging.info(string)
 获取输入
 
 apt-get install ffmpeg 

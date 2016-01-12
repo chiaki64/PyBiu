@@ -1,12 +1,12 @@
 {
     "format": {
-        "filename": "D:\\迅雷下载\\钢之炼金术师FA2009原声集.-.[FULLMETAL.ALCHEMIST][Original.Soundtrack.1].专辑.(FLAC)\\01. Main Theme ~The Fullmetal Alchemist~.flac",
+        "filename": "D:\\迅雷下载\\[FULLMETAL.ALCHEMIST][Original.Soundtrack.1]\\23. Hum of the Streets.flac",
         "nb_streams": 1,
         "format_name": "flac",
         "format_long_name": "raw FLAC",
-        "duration": "222.520000",
-        "size": "21303676",
-        "bit_rate": "765906",
+        "duration": "68.773333",
+        "size": "5478541",
+        "bit_rate": "637286",
         "tags": {
             "ALBUM": "FULLMETAL ALCHEMIST Original Soundtrack 1",
             "ALBUM ARTIST": "Akira Senju",
@@ -14,14 +14,14 @@
             "COMPOSER": "Akira Senju",
             "DATE": "2009",
             "GENRE": "Anime Soundtrack",
-            "PERFORMER": "Warsaw Philharmonic Orchestra & Choir & Mario Klemens",
-            "TITLE": "Main Theme ~The Fullmetal Alchemist~",
+            "PERFORMER": "Tomoyuki Asakawa, harp",
+            "TITLE": "Hum of the Streets",
             "TOTALTRACKS": "31",
-            "track": "1",
+            "track": "23",
             "REPLAYGAIN_ALBUM_GAIN": "-5.69 dB",
             "REPLAYGAIN_ALBUM_PEAK": "1.000000",
-            "REPLAYGAIN_TRACK_GAIN": "-6.60 dB",
-            "REPLAYGAIN_TRACK_PEAK": "1.000000"
+            "REPLAYGAIN_TRACK_GAIN": "-1.07 dB",
+            "REPLAYGAIN_TRACK_PEAK": "0.556091"
         }
     }
 }
