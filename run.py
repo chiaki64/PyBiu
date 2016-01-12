@@ -6,7 +6,7 @@ import getopt
 import os
 import sys
 import logging;logging.basicConfig(level=logging.INFO)
-from src.init import init
+from src.init import init, usage
 from src.md5 import file_md5
 from src.post import post_biu, confirm
 try:
@@ -31,6 +31,7 @@ if len(sys.argv) == 1:
             r = requests.get('http://biu.moe/', timeout=3)
             if r.status_code != 200:
                 raise ValueError()
+            break
         except Exception as e:
             if i == 2:
                 logging.info("Fail. Please check your internet connection.")

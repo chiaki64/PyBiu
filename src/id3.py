@@ -4,12 +4,14 @@
 
 import codecs
 import json
-import logging;logging.basicConfig(level=logging.INFO)
+import logging
 import os
+
+logging.basicConfig(level=logging.INFO)
 
 
 def getID3(file):
-
+    """获取音乐文件的ID3"""
     f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
     cmd = "cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
     os.system(cmd)
@@ -29,7 +31,7 @@ def getID3(file):
             pass
     except KeyError:
         return "", "", "", 0
-
+    # 使用两层异常捕获来获取可能的大小写格式
     try:
         title = s['format']['tags']['title']
     except KeyError:

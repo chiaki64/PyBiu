@@ -9,3 +9,4 @@
 9.usr @property
 10.重试3次 失败就抛异常
 11.apt-get install ffmpeg   osx brew install ffmpeg
+12.使用类封装

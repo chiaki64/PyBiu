@@ -2,16 +2,17 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
-import logging;logging.basicConfig(level=logging.INFO)
+import logging
+import os
 import platform
+import shutil
+
 try:
     import configparser
 except ImportError:
     import ConfigParser
 
-def usage():
-    logging.info("help")
-    pass
+logging.basicConfig(level=logging.INFO)
 
 
 def init():
@@ -43,8 +44,7 @@ def init():
 
 
 def system():
-    global sys
-    logging.info(platform.system())
+    """"""
     s = platform.system()
     if s == 'Windows':
         sys = 'Windows'
@@ -55,6 +55,20 @@ def system():
     else:
         sys = 'Linux'
         return sys
+
+
+def exist():
+    if os.path.exists('../.env'):
+        if os.path.exists('../.env.example'):
+            shutil.copy('../.env.example', '../.env.bak')
+            os.renames('../.env.bak', '../.env')
+        pass
+    pass
+
+
+def usage():
+    logging.info("help")
+    pass
 
 
 if __name__ == "__main__":

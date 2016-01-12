@@ -4,12 +4,12 @@
 
 import json
 import requests
-import logging;
-
-logging.basicConfig(level=logging.INFO)
+import logging
 from src.id3 import getID3
 from src.md5 import file_md5
 from src.sign import sign, uid
+
+logging.basicConfig(level=logging.INFO)
 
 
 def post(uid, filemd5, title, singer, album, sign, api):
@@ -39,7 +39,7 @@ def post_force(uid, filemd5, title, singer, album, sign, api, force):
               'force': force}
     r = requests.post(api, data=upload)
     try:
-        flag, token, upload = judge(unicode(r.text))
+        flag, token, upload = judge(r.text)
         if flag:
             logging.info("token ->" + token)
             return True, token
@@ -51,6 +51,7 @@ def post_force(uid, filemd5, title, singer, album, sign, api, force):
 
 def judge(text):
     str = json.loads(text)
+    logging.info(str)
     if str['success']:
         token = str['token']
         return True, token, True
@@ -79,8 +80,11 @@ def error(error_code):
     elif error_code == 5:
         logging.info("服务器已存在该文件（撞 MD5）")
         return 5
+    elif error_code == 7:
+        logging.info("服务器菌正在休息，请不要打扰它~")
+        return 7
     else:
-        logging.info("unknown result.")
+        logging.info("未知原因")
         return 6
 
 
@@ -114,7 +118,7 @@ def post_biu(file):
     if flag:
         logging.info("允许上传")
         return 1, token, title
-    logging.info("取消上传.")
+    logging.info("上传已取消")
     return 0, "", title
 
 
