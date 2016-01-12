@@ -16,11 +16,16 @@ def getID3(file):
     if system() == "Windows":
         f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
         cmd = "cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
+        os.system(cmd)
+        temp_file = codecs.open(f, 'rb', 'utf-8')
     else:
-        f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
-        cmd = "ffprobe -v quiet -print_format json -show_format " + file + " > " + f
-    os.system(cmd)
-    temp_file = codecs.open(f, 'rb', 'utf-8')
+        # f = os.path.split(os.path.realpath(__file__))[0] + "/media.json"
+        # file = file[1:-1]
+        # file = os.path.split(file)
+        # # logging.info("-》"+file)
+        cmd = "ffprobe -v quiet -print_format json -show_format " + file + " > " + "./src/media.json"
+        os.system(cmd)
+        temp_file = codecs.open('./src/media.json', 'rb', 'utf-8')
     tmp_json = temp_file.read()
     temp_file.close()
     s = json.loads(tmp_json)

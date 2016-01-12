@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 
 def post(uid, filemd5, title, singer, album, sign, api):
     upload = {'uid': uid, 'filemd5': filemd5, 'title': title, 'singer': singer, 'album': album, 'sign': sign}
-    r = requests.post(api, data=upload)
+    r = requests.post(api, data=upload, verify=False)  # dirty hack
     flag, token, up = judge(r.text)
     if flag:
         logging.info("token ->" + token)
@@ -37,7 +37,7 @@ def post(uid, filemd5, title, singer, album, sign, api):
 def post_force(uid, filemd5, title, singer, album, sign, api, force):
     upload = {'uid': uid, 'filemd5': filemd5, 'title': title, 'singer': singer, 'album': album, 'sign': sign,
               'force': force}
-    r = requests.post(api, data=upload)
+    r = requests.post(api, data=upload, verify=False)
     try:
         flag, token, upload = judge(r.text)
         if flag:
@@ -129,7 +129,7 @@ def post_file(path, key, token):
     path = path[1:-1]
     file = {'file': open(path, 'rb')}
     upload = {'key': key, 'x:md5': key, 'token': token}
-    r = requests.post("http://upload.qiniu.com/", files=file, data=upload)
+    r = requests.post("http://upload.qiniu.com/", files=file, data=upload, verify=False)
     status = r.status_code
     if status == 200:
         return True

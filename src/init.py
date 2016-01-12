@@ -56,6 +56,7 @@ def system():
 
 def exist():
     if not os.path.exists('./.env'):
+        logging.info("no exist")
         try:
             config = configparser.ConfigParser()
             config.read_file(open('./.env'))
