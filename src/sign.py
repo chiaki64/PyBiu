@@ -2,13 +2,16 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
-import logging;logging.basicConfig(level=logging.INFO)
-from src.md5 import str_md5, file_md5
-from src.id3 import getID3
+import logging
+from src.md5 import md5
+
 try:
     import configparser
 except ImportError:
     import ConfigParser
+
+logging.basicConfig(level=logging.INFO)
+
 
 def uid():
     try:
@@ -16,10 +19,7 @@ def uid():
     except:
         config = ConfigParser.ConfigParser()
     try:
-        # try:
         config.read_file(open('./.env'))
-        # except:
-        #     config.read_file(open('../.env'))
     except:
         config.readfp(open('./.env'))
     finally:
@@ -29,10 +29,10 @@ def uid():
         return uid, key, api
 
 
-def sign(uid, md5, key, title, artist, album):
-    str = uid + md5 + title + artist + album + key
-    sign_str = str_md5(str.encode('utf-8'))
-    return sign_str
+def sign(_uid, _md5, _key, _title, _artist, _album):
+    str = _uid + _md5 + _title + _artist + _album + _key
+    sign_string = md5(str.encode('utf-8'), "str")
+    return sign_string
 
 
 if __name__ == "__main__":

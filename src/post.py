@@ -6,7 +6,7 @@ import json
 import requests
 import logging
 from src.id3 import getID3
-from src.md5 import file_md5
+from src.md5 import md5
 from src.sign import sign, uid
 
 logging.basicConfig(level=logging.INFO)
@@ -23,7 +23,7 @@ def post(uid, filemd5, title, singer, album, sign, api):
         logging.info("是否强制撞车 Y/N")
         try:
             force = raw_input()
-        except:
+        except NameError:
             force = input()
         if force in ["Y", "y"]:
             force = 1
@@ -72,28 +72,31 @@ def error(error_code):
         logging.info("系统检测疑似撞车")
         return 2
     elif error_code == 3:
-        logging.info("未通过审核的歌曲超过 100 首，请先进入网站『我上传的音乐』删除一部分未通过的文件")
+        logging.info("未通过审核的歌曲超过 100 首 请先进入网站『我上传的音乐』删除一部分未通过的文件")
         return 3
     elif error_code == 4:
-        logging.info("参数不齐，至少歌曲名不能为空")
+        logging.info("参数不齐 至少歌曲名不能为空")
         return 4
     elif error_code == 5:
         logging.info("服务器已存在该文件（撞 MD5）")
         return 5
+    elif error_code == 6:
+        logging.info("服务器录入失败 如果发现请通知管理员")
+        return 6
     elif error_code == 7:
         logging.info("服务器菌正在休息，请不要打扰它~")
         return 7
     else:
         logging.info("未知原因")
-        return 6
+        return 100
 
 
 def solve(string):
     logging.info("疑似撞车的歌曲:")
     for res in string:
         logging.info(
-            "Title: " + res['title'] + " | album: " + res['album'] + " | singer: " + res['singer'] + " | sid: " +
-            res['sid'] + " | score : %.1f" % res['score'])
+                "Title: " + res['title'] + " | album: " + res['album'] + " | singer: " + res['singer'] + " | sid: " +
+                res['sid'] + " | score : %.1f" % res['score'])
     pass
 
 
@@ -111,7 +114,7 @@ def post_biu(file):
     logging.info("Title -> " + _title)
     logging.info("Artist -> " + _artist)
     logging.info("Album -> " + _album)
-    _md5 = file_md5(file)
+    _md5 = md5(file, "file")  # file_md5
     _uid, _key, _api = uid()
     _sign_str = sign(_uid, _md5, _key, _title, _artist, _album)
     flag, token, title = post(_uid, _md5, _title, _artist, _album, _sign_str, _api)
@@ -137,7 +140,7 @@ def confirm(title, path, key, token):
     logging.info("是否上传？Y/N")
     try:
         choose = raw_input()
-    except:
+    except NameError:
         choose = input()
     if choose in ["Y", "y"]:
         if post_file(path, key, token):

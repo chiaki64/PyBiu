@@ -6,19 +6,24 @@ import codecs
 import json
 import logging
 import os
+from src.init import system
 
 logging.basicConfig(level=logging.INFO)
 
 
 def getID3(file):
     """获取音乐文件的ID3"""
-    f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
-    cmd = "cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
+    if system() == "Windows":
+        f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
+        cmd = "cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
+    else:
+        f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
+        cmd = "ffprobe -v quiet -print_format json -show_format " + file + " > " + f
     os.system(cmd)
-    tmpfile = codecs.open(f, 'rb', 'utf-8')
-    tmp = tmpfile.read()
-    tmpfile.close()
-    s = json.loads(tmp)
+    temp_file = codecs.open(f, 'rb', 'utf-8')
+    tmp_json = temp_file.read()
+    temp_file.close()
+    s = json.loads(tmp_json)
     flag = 1
     try:
         bit_rate = int(s['format']['bit_rate'])

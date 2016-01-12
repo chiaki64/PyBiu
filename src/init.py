@@ -16,23 +16,21 @@ logging.basicConfig(level=logging.INFO)
 
 
 def init():
+    exist()
     try:
         config = configparser.ConfigParser()
-    except:
-        config = ConfigParser.ConfigParser()
-    try:
         config.read_file(open('./.env'))
     except:
+        config = ConfigParser.ConfigParser()
         config.readfp(open('./.env'))
     logging.info("Set UID")
     try:
         config.set("Config", "uid", raw_input())
-    except:
-        config.set("Config", "uid", input())
-    logging.info("Set KEY")
-    try:
+        logging.info("Set KEY")
         config.set("Config", "key", raw_input())
     except:
+        config.set("Config", "uid", input())
+        logging.info("Set KEY")
         config.set("Config", "key", input())
     logging.info("Set Python Version")
     config.set("Config", "python", platform.python_version())
@@ -44,7 +42,6 @@ def init():
 
 
 def system():
-    """"""
     s = platform.system()
     if s == 'Windows':
         sys = 'Windows'
@@ -58,11 +55,15 @@ def system():
 
 
 def exist():
-    if os.path.exists('../.env'):
-        if os.path.exists('../.env.example'):
-            shutil.copy('../.env.example', '../.env.bak')
-            os.renames('../.env.bak', '../.env')
-        pass
+    if not os.path.exists('./.env'):
+        try:
+            config = configparser.ConfigParser()
+            config.read_file(open('./.env'))
+        except:
+            config = ConfigParser.ConfigParser()
+            config.readfp(open('./.env', 'w+'))
+        config.add_section("Config")
+        config.write(open('./.env', 'w+'))
     pass
 
 

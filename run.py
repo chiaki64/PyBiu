@@ -7,7 +7,7 @@ import os
 import sys
 import logging;logging.basicConfig(level=logging.INFO)
 from src.init import init, usage
-from src.md5 import file_md5
+from src.md5 import md5
 from src.post import post_biu, confirm
 try:
     import configparser
@@ -65,7 +65,7 @@ else:
                 if not flag:
                     sys.exit()
                 else:
-                    confirm(title, file, file_md5(file), token)
+                    confirm(title, file, md5(file, "file"), token)
                 pass
 
         elif argv in "-v":
