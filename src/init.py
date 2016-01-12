@@ -9,7 +9,6 @@ try:
 except ImportError:
     import ConfigParser
 
-
 def usage():
     logging.info("help")
     pass

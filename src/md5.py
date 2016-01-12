@@ -2,37 +2,26 @@
 # -*- coding:utf-8 -*-
 # @author:Hieda no Chiaki <i@wind.moe>
 
-import logging;logging.basicConfig(level=logging.INFO)
 import hashlib
+import logging;logging.basicConfig(level=logging.INFO)
 import os
 import sys
-# import time
 
 
-def str_md5(str):
+def str_md5(string):
     obj = hashlib.md5()
-    obj.update(str)
+    obj.update(string)
     str_hash = obj.hexdigest()
-
-    # logging.info(str_hash)
-
     return str_hash
 
 
 def file_md5(file_path):
-    # start = time.time()
     # 灰常重要的切片
     file_path = file_path[1:-1]
     with open(file_path, 'rb') as f:
         obj = hashlib.md5()
         obj.update(f.read())
         file_hash = obj.hexdigest()
-
-        # logging.info(file_hash)
-
-        # end = time.time()
-        # interval = (end - start)
-        # logging.info(interval)
         return file_hash
 
 
