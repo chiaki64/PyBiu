@@ -68,7 +68,7 @@ else:
                 if file[0] != "\"":
                     file = "\"" + file + "\""
                 flag, token, title = post_biu(file)
-                if not flag:
+                if not flag == 1:
                     sys.exit()
                 else:
                     confirm(title, file, md5(file, "file"), token)
@@ -91,11 +91,20 @@ else:
                         logging.info(info[1])
                         task_queue.put(info)
                 else:
-                    print "上传队列为空，请检查目录的合法文件"
+                    print("上传队列为空，请检查目录的合法文件")
                     sys.exit()
-                while not task_queue.empty():
-                    task = task_queue.get()
-                    confirm(task[1], task[2], md5(task[2], "file"), task[0], auto=1)
+
+                logging.info("请确认是否开始批量上传  Y/N")
+                try:
+                    choose = raw_input()
+                except NameError:
+                    choose = input()
+                if choose in ["Y", "y"]:
+                    while not task_queue.empty():
+                        task = task_queue.get()
+                        confirm(task[1], task[2], md5(task[2], "file"), task[0], auto=1)
+                else:
+                    logging.info("取消批量上传.")
                 pass
 
             else:

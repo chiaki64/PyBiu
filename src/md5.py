@@ -23,6 +23,7 @@ def md5(string, type):
             obj = hashlib.md5()
             obj.update(f.read())
             string_hash = obj.hexdigest()
+            logging.info(string_hash)
             return string_hash
     return None
 

@@ -28,7 +28,7 @@ def que(_path):
         # print suffix
         if suffix[1:] in ["mp3", "aac", "flac", "ape", "wav", "tta", "tak", "alac"]:
             logging.info(filename.decode('gbk'))  #.decode('gbk')
-            logging.info(_path + os.sep + filename)  # .decode('gbk')
+            logging.info(_path + os.sep + filename.decode('gbk'))  # .decode('gbk')
             string = "\""+_path + os.sep + filename+"\""
             flag, token, title = post_biu(string)  #日文曲出错 .decode('gbk')
             if flag:

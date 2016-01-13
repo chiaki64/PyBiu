@@ -5,10 +5,16 @@
 import json
 import requests
 import logging
+import sys
+import os
+import time
+import random
 from src.id3 import getID3
 from src.md5 import md5
 from src.sign import sign, uid
 # from src.dir import que
+import pycurl
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -130,7 +136,7 @@ def post_file(path, key, token):
     path = path[1:-1]
     file = {'file': open(path, 'rb')}
     upload = {'key': key, 'x:md5': key, 'token': token}
-    r = requests.post("http://upload.qiniu.com/", files=file, data=upload, verify=False)
+    r = requests.post("http://upload.qiniu.com/", files=file, data=upload)
     status = r.status_code
     if status == 200:
         return True
@@ -145,8 +151,8 @@ def confirm(title, path, key, token, auto=0):
         except NameError:
             choose = input()
         if choose in ["Y", "y"]:
-            if post_file(path, key, token):
-                logging.info("成功上传  " + title.encode('gbk'))
+            if post_file_curl(path, key, token):
+                logging.info("成功上传  " + title)
             else:
                 logging.info("未知原因失败")
         else:
@@ -159,6 +165,77 @@ def confirm(title, path, key, token, auto=0):
         else:
             logging.info("未知原因失败")
 
+
+def progress(_, __, upload_t, upload_d):
+    if upload_t > 0.0 and upload_t >= upload_d:
+        # print("Total to upload", upload_t)
+        # print("Total uploaded", upload_d)
+        bar_length = 20
+        percent = float(upload_d) / float(upload_t) * 100
+        # print(percent)
+        hashes = '#' * int(percent/100.0 * bar_length)
+        spaces = ' ' * (bar_length - len(hashes))
+        sys.stdout.write("\rPercent: [%s] %d%%" % (hashes + spaces, percent))
+        sys.stdout.flush()
+    elif upload_t != 0.0 and upload_t <= upload_d:
+        sys.stdout.flush()
+        sys.stdout.write("\rPercent: [####################] 100%\n")
+        sys.stdout.flush()
+
+
+def my_urlencode(string):
+    reprStr = repr(string).replace(r'\x', '%')
+    return reprStr[1:-1]
+
+
+def post_file_curl(path, key, token):
+    c = pycurl.Curl()
+    c.setopt(c.POST, 1)
+    # if path[0] == "\"":
+    path = path[1:-1]
+
+    if os.path.exists(path):
+        suffix = os.path.splitext(path)[1]
+        # A fucking dirty hack - rename file
+        while True:
+            number = random.randint(10, 100000)
+            if not os.path.exists(os.path.split(path)[0] + "/" + str(number) + suffix):
+                newpath = os.path.split(path)[0] + "/" + str(number) + suffix
+                break
+        os.rename(path, newpath)
+        print("rename" + newpath)
+
+    bak_path = newpath
+    print(path)
+    fields = [('file', (c.FORM_FILE, newpath.encode('gbk'))),
+              ('token', token),
+              ('key', key),
+              ('x:md5', key)]
+    c.setopt(c.VERBOSE, 1)
+    c.setopt(c.URL, "http://upload.qiniu.com/")
+    c.setopt(c.HTTPPOST,  fields)
+    c.setopt(c.NOPROGRESS, 0)
+    c.setopt(c.PROGRESSFUNCTION, progress)
+    c.setopt(pycurl.CONNECTTIMEOUT, 60)
+    c.setopt(pycurl.TIMEOUT, 600)
+    try:
+        info = c.perform()
+        print(info)
+        print(fields)
+        if c.getinfo(c.HTTP_CODE) == 200:
+            os.rename(newpath, path)
+            print("rename" + path)
+            return True
+    except pycurl.error as e:
+        print(e)
+        sys.stdout.write("File no Found!")
+        return False
+    if os.path.exists(newpath):
+        os.rename(newpath, path)
+        print("rename" + path)
+
+    c.close()
+    return False
 
 
 
