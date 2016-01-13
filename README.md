@@ -13,10 +13,10 @@
 
 ## 依赖
 
-* Python>=3.3 || Python>=2.7 (May not work under the python version, Who knows?_(:3」∠)_)
+* Python>=3.3 || Python>=2.7 (May not work under the python version, Who knows?\_(:3」∠)\_\
 * requests>=2.9
+* pycurl>=7.19
 * ffmpeg
-* ...
 
 ## 食用方法
 
@@ -33,9 +33,9 @@
 
 
 ### 上传整个文件夹的音乐
-会遍历整个文件夹的音乐文件(一层),然后利用多线程提交
+会遍历整个文件夹的音乐文件(一层),然后利用单线程提交 (对于 python2.7 此选项或许不太稳定)
 
-    相应代码尚未PR
+    python run.py -d "/music/"
     
 
 ### 其他
@@ -47,5 +47,6 @@
 ## 任务列表
 * ~~适配Windows~~ 
 * 适配Linux & MacOS
+* 多线程
 * 添加文件备注
-* 进度条
+* ~~进度条~~
