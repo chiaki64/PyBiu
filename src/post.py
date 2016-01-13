@@ -8,6 +8,7 @@ import logging
 from src.id3 import getID3
 from src.md5 import md5
 from src.sign import sign, uid
+# from src.dir import que
 
 logging.basicConfig(level=logging.INFO)
 
@@ -136,23 +137,31 @@ def post_file(path, key, token):
     return False
 
 
-def confirm(title, path, key, token):
-    logging.info("是否上传？Y/N")
-    try:
-        choose = raw_input()
-    except NameError:
-        choose = input()
-    if choose in ["Y", "y"]:
+def confirm(title, path, key, token, auto=0):
+    if auto == 0:
+        logging.info("是否上传？Y/N")
+        try:
+            choose = raw_input()
+        except NameError:
+            choose = input()
+        if choose in ["Y", "y"]:
+            if post_file(path, key, token):
+                logging.info("成功上传  " + title.encode('gbk'))
+            else:
+                logging.info("未知原因失败")
+        else:
+            logging.info("取消上传.")
+            pass
+        pass
+    elif auto == 1:
         if post_file(path, key, token):
             logging.info("成功上传  " + title.encode('gbk'))
         else:
             logging.info("未知原因失败")
-    else:
-        logging.info("取消上传.")
-        pass
 
-    pass
+
 
 
 if __name__ == "__main__":
+
     pass

@@ -10,3 +10,4 @@
 10.重试3次 失败就抛异常
 11.apt-get install ffmpeg   osx brew install ffmpeg
 12.使用类封装
+13.深度遍历一个文件夹及其子目录

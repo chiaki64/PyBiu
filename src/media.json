@@ -1,27 +1,27 @@
 {
     "format": {
-        "filename": "D:\\迅雷下载\\[FULLMETAL.ALCHEMIST][Original.Soundtrack.1]\\24. Beyond the Walls.flac",
+        "filename": "D:\\迅雷下载\\[FULLMETAL.ALCHEMIST][Original.Soundtrack.1]\\31. LET IT OUT (TV Size) (Fukuhara Miho).flac",
         "nb_streams": 1,
         "format_name": "flac",
         "format_long_name": "raw FLAC",
-        "duration": "218.946667",
-        "size": "19801644",
-        "bit_rate": "723523",
+        "duration": "90.986667",
+        "size": "11053704",
+        "bit_rate": "971896",
         "tags": {
             "ALBUM": "FULLMETAL ALCHEMIST Original Soundtrack 1",
             "ALBUM ARTIST": "Akira Senju",
-            "ARTIST": "Akira Senju",
-            "COMPOSER": "Akira Senju",
+            "ARTIST": "Fukuhara Miho",
+            "COMPOSER": "Fukuhara Miho",
             "DATE": "2009",
             "GENRE": "Anime Soundtrack",
-            "PERFORMER": "Warsaw Philharmonic Orchestra & Choir & Mario Klemens",
-            "TITLE": "Beyond the Walls",
+            "PERFORMER": "Fukuhara Miho",
+            "TITLE": "LET IT OUT (TV Size)",
             "TOTALTRACKS": "31",
-            "track": "24",
+            "track": "31",
             "REPLAYGAIN_ALBUM_GAIN": "-5.69 dB",
             "REPLAYGAIN_ALBUM_PEAK": "1.000000",
-            "REPLAYGAIN_TRACK_GAIN": "-4.98 dB",
-            "REPLAYGAIN_TRACK_PEAK": "1.000000"
+            "REPLAYGAIN_TRACK_GAIN": "-8.51 dB",
+            "REPLAYGAIN_TRACK_PEAK": "0.675201"
         }
     }
 }

@@ -6,6 +6,7 @@ import codecs
 import json
 import logging
 import os
+import sys
 from src.init import system
 
 logging.basicConfig(level=logging.INFO)
@@ -15,8 +16,17 @@ def getID3(file):
     """获取音乐文件的ID3"""
     if system() == "Windows":
         f = os.path.split(os.path.realpath(__file__))[0] + "\media.json"
-        cmd = "cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
-        os.system(cmd)
+        cmd = r"cd src\win & ffprobe -v quiet -print_format json -show_format " + file + " > " + f
+        # reload(sys)
+        # sys.setdefaultencoding("utf-8")
+
+        # tf = codecs.open('./src/tmp.txt','w','utf-8')
+        # txt = unicode(cmd, 'utf-8')
+        # tf.write(txt)
+        # cmd = tf.read()
+        # tf.close()
+
+        os.system(cmd) # 处理编码  新函数负责写入文件
         temp_file = codecs.open(f, 'rb', 'utf-8')
     else:
         # f = os.path.split(os.path.realpath(__file__))[0] + "/media.json"
